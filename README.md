@@ -1,7 +1,7 @@
-# SQSpub
+# SQS
 
 You will need to make 3 queues in AWS SQS QueueA, QueueB, QueueC\
-Running SQSpub will queue a message for you.  For getting messages from the queue check the [client](https://github.com/thatsjustjohn/SQSClient)
+To queue something command line arguments (1 for send 2 for receive) the second parameter is the string you want to be sent as a message.
 
 # Documentation
 For more documentation go here
