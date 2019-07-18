@@ -18,14 +18,24 @@ public class App {
 
     public static void main(String[] args) {
         final String queueSubURL = "https://sqs.us-west-2.amazonaws.com/283346001770/";
-
+        String[] queues = {"QueueA", "QueueB", "QueueC"};
         try {
-            // Send a message.
-            if(Integer.parseInt(args[0]) == 1) {
-                sendMessage(queueSubURL, args[1]);
-            }else{// Receive message
-                receiveMessage(queueSubURL);
-            }
+            // Need at least 2 arguments and validate the first 2 are within bounds
+            if(args.length < 2) throw new IllegalArgumentException();
+            int sendOrReceive = Integer.parseInt(args[0]);
+            if(sendOrReceive > 2 || sendOrReceive < 1) throw new IllegalArgumentException();
+            int whichQueue = Integer.parseInt(args[1]);
+            if(whichQueue > 2 || whichQueue < 0) throw new IllegalArgumentException();
+
+            if(sendOrReceive == 1) {
+                // Check string argument
+                if(args.length != 3) throw new IllegalArgumentException();
+                if(args[2] == null) throw new IllegalArgumentException();
+                // Send a message.
+                sendMessage(queueSubURL, queues[whichQueue], args[2]);
+            }else if(sendOrReceive == 2){// Receive message
+                receiveMessage(queueSubURL, queues[whichQueue]);
+            }else throw new IllegalArgumentException();
 
         } catch (final AmazonServiceException ase) {
             System.out.println("Caught an AmazonServiceException, which means " +
@@ -45,19 +55,19 @@ public class App {
         }
     }
 
-    public static void sendMessage(String queueSubURL, String message){
+    public static void sendMessage(String queueSubURL, String queue, String message){
         final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
         // Send a message.
         System.out.println("Sending a message to A Queue.\n");
-        sqs.sendMessage(new SendMessageRequest(queueSubURL + "QueueA", message));
+        sqs.sendMessage(new SendMessageRequest(queueSubURL + queue, message));
     }
 
-    public static void receiveMessage(String queueSubURL){
+    public static void receiveMessage(String queueSubURL, String queue){
         final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
         // Receive messages.
         System.out.println("Receiving messages from MyQueue.\n");
         final ReceiveMessageRequest receiveMessageRequest =
-                new ReceiveMessageRequest(queueSubURL + "QueueA");
+                new ReceiveMessageRequest(queueSubURL + queue);
         final List<Message> messages = sqs.receiveMessage(receiveMessageRequest)
                 .getMessages();
         for (final Message message : messages) {
