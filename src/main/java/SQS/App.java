@@ -62,7 +62,7 @@ public class App {
         sqs.sendMessage(new SendMessageRequest(queueSubURL + queue, message));
     }
 
-    public static void receiveMessage(String queueSubURL, String queue){
+    public static String receiveMessage(String queueSubURL, String queue){
         final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
         // Receive messages.
         System.out.println("Receiving messages from MyQueue.\n");
@@ -88,6 +88,8 @@ public class App {
                 System.out.println("  Value: " + entry
                         .getValue());
             }
+            return message.getBody();
         }
+        return null;
     }
 }

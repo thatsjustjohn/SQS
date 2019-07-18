@@ -7,4 +7,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AppTest {
+    @Test
+    public void test_sendMessage_receive() {
+        String message = "This is a message from john for testing";
+        App.sendMessage("https://sqs.us-west-2.amazonaws.com/283346001770/", "QueueA", message);
+        assertEquals(message, App.receiveMessage("https://sqs.us-west-2.amazonaws.com/283346001770/","QueueA"));
+    }
+
 }
